@@ -1,0 +1,21 @@
+{
+    "ticket_open": {
+        "title": "",
+        "description": "",
+        "color": "#cd00fe",
+        "footer": "",
+        "thumbnail": true,
+        "fields": [
+            {
+                "name": "**𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐂𝐉𝐄 𝐎 𝐊𝐋𝐈𝐄𝐍𝐂𝐈𝐄:**",
+                "value": "> **•**    **UŻYTKOWNIK:** {user_mention}\n > **•**     **NICK:** {user_name}\n > **•**     **ID:** {user_id}",
+                "inline": false
+            },
+            {
+                "name": "**𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐂𝐉𝐄 𝐎 𝐏𝐑𝐎𝐃𝐔𝐊𝐂𝐈𝐄:**",
+                "value": "> **•**    **PRODUKT:** {name}\n",
+                "inline": false
+            }
+        ]
+    }
+}
