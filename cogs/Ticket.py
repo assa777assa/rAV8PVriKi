@@ -53,7 +53,7 @@ class TicketButtonView(View):
 
 class CloseTicketView(View):
     def __init__(self, channel):
-        super().__init__()
+        super().__init__(timeout=None)  # Make the view persistent
         self.channel = channel
 
     @nextcord.ui.button(label="❌ Zamknij Ticket", style=ButtonStyle.danger, custom_id="close_ticket")

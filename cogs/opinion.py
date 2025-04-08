@@ -49,7 +49,13 @@ class Opinie(commands.Cog):
         if opinia:
             embed.add_field(name="Opinia klienta:", value=opinia, inline=False)
 
-        opinie_channel = nextcord.utils.get(interaction.guild.text_channels, name="⭐•opinie")
+        # Find channel that starts with ⭐•opinie
+        opinie_channel = None
+        for channel in interaction.guild.text_channels:
+            if channel.name.startswith("⭐•opinie"):
+                opinie_channel = channel
+                break
+                
         if not opinie_channel:
             category = nextcord.utils.get(interaction.guild.categories, name="TICKETY")
             overwrites = {
@@ -57,7 +63,7 @@ class Opinie(commands.Cog):
                 interaction.guild.me: nextcord.PermissionOverwrite(view_channel=True, send_messages=True)
             }
             opinie_channel = await interaction.guild.create_text_channel(
-                name="opinie",
+                name="⭐•opinie",
                 overwrites=overwrites,
                 category=category
             )
