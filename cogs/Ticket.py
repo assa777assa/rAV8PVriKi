@@ -99,6 +99,41 @@ class TicketSettingsView(View):
         except Exception as e:
             await interaction.response.send_message(f"Błąd: {e}", ephemeral=True)
 
+    @nextcord.ui.button(label="🔒 Przejmij", style=ButtonStyle.success, custom_id="take_ticket")
+    async def take_ticket(self, button: Button, interaction: Interaction):
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message("❌ Brak uprawnień!", ephemeral=True)
+            return
+
+        try:
+            ticket_owner = None
+            for member in self.ticket_channel.members:
+                if not member.bot and not member.guild_permissions.administrator:
+                    ticket_owner = member
+                    break
+
+            if not ticket_owner:
+                await interaction.response.send_message("Nie znaleziono właściciela ticketu.", ephemeral=True)
+                return
+
+            for member in self.ticket_channel.members:
+                if member != interaction.guild.me and member != ticket_owner and member != interaction.user:
+                    await self.ticket_channel.set_permissions(member, view_channel=False)
+
+            await self.ticket_channel.set_permissions(ticket_owner, view_channel=True, send_messages=True)
+            await self.ticket_channel.set_permissions(interaction.user, view_channel=True, send_messages=True)
+
+            embed = Embed(
+                title="Ticket Przejęty",
+                description=f"🔒 Ten ticket został przejęty przez {interaction.user.mention}.",
+                color=0x2ecc71
+            )
+            await self.ticket_channel.send(embed=embed)
+            await interaction.response.send_message("Pomyślnie przejąłeś ticket.", ephemeral=True)
+
+        except Exception as e:
+            await interaction.response.send_message(f"error: {str(e)}", ephemeral=True)
+
     @nextcord.ui.button(label="❌ Zamknij Ticket", style=ButtonStyle.danger, custom_id="close_ticket_admin")
     async def close_ticket_admin(self, button: Button, interaction: Interaction):
         await interaction.response.send_message("Ticket zostanie zamknięty za 5 sekund...", ephemeral=True)
@@ -177,7 +212,7 @@ class Ticket(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    ServerID = 1351958328087154748
+    ServerID = 1351929804559093871
 
     @nextcord.slash_command(name="ticket", description="ticket", guild_ids=[ServerID])
     async def ticket(self, interaction: Interaction):
