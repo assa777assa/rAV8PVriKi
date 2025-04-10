@@ -123,19 +123,14 @@ class TicketSettingsView(View):
                 print(f"Field name: {field.name}")
                 print(f"Field value: {field.value}")
                 if "𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐂𝐉𝐄 𝐎 𝐊𝐋𝐈𝐄𝐍𝐂𝐈𝐄" in field.name:
-                    print("Found INFORMACJE O KLIENCIE field")
-                    # First try to get user ID from mention
                     mention_match = re.search(r'<@(\d+)>', field.value)
                     if mention_match:
                         user_id = int(mention_match.group(1))
-                        print(f"Found user ID from mention: {user_id}")
                         ticket_owner = await interaction.guild.fetch_member(user_id)
                         break
-                    # If no mention found, try to get from ID field
                     user_id_match = re.search(r'ID:\s*(\d+)', field.value)
                     if user_id_match:
                         user_id = int(user_id_match.group(1))
-                        print(f"Found user ID from ID field: {user_id}")
                         ticket_owner = await interaction.guild.fetch_member(user_id)
                         break
 
