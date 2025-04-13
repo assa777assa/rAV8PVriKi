@@ -94,6 +94,15 @@ class TicketSettingsView(View):
 
     @nextcord.ui.button(label="🔔 Powiadom", style=ButtonStyle.primary, custom_id="notify_ticket")
     async def notify_ticket(self, button: Button, interaction: Interaction):
+        trial_seller_role = nextcord.utils.get(interaction.guild.roles, name="Trail seller")
+        seller_role = nextcord.utils.get(interaction.guild.roles, name="seller")
+
+        if not (interaction.user.guild_permissions.administrator or 
+                (trial_seller_role and trial_seller_role in interaction.user.roles) or 
+                (seller_role and seller_role in interaction.user.roles)):
+            await interaction.response.send_message("❌ Brak uprawnień!", ephemeral=True)
+            return
+
         try:
             ticket_owner = None
             for member in self.ticket_channel.members:
@@ -104,7 +113,7 @@ class TicketSettingsView(View):
             if ticket_owner:
                 embed = Embed(
                     title="Powiadomienie dotyczące Twojego ticketa!",
-                    description=f"Administrator wysłał powiadomienie w sprawie Twojego ticketu: {self.ticket_channel.mention}.",
+                    description=f"Sprzedawca wysłał powiadomienie w sprawie Twojego ticketu: {self.ticket_channel.mention}.",
                     color=0x3498db
                 )
                 await ticket_owner.send(embed=embed)
@@ -116,7 +125,12 @@ class TicketSettingsView(View):
 
     @nextcord.ui.button(label="🔒 Przejmij", style=ButtonStyle.success, custom_id="take_ticket")
     async def take_ticket(self, button: Button, interaction: Interaction):
-        if not interaction.user.guild_permissions.administrator:
+        trial_seller_role = nextcord.utils.get(interaction.guild.roles, name="Trail seller")
+        seller_role = nextcord.utils.get(interaction.guild.roles, name="seller")
+
+        if not (interaction.user.guild_permissions.administrator or 
+                (trial_seller_role and trial_seller_role in interaction.user.roles) or 
+                (seller_role and seller_role in interaction.user.roles)):
             await interaction.response.send_message("❌ Brak uprawnień!", ephemeral=True)
             return
 
