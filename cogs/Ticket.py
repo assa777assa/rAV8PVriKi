@@ -26,11 +26,19 @@ class TicketButtonView(View):
             await interaction.response.send_message(f"Masz już otwarty ticket: {existing_channel.mention}", ephemeral=True)
             return
 
+        trial_seller_role = nextcord.utils.get(guild.roles, name="Trail seller")
+        seller_role = nextcord.utils.get(guild.roles, name="seller")
+
         overwrites = {
             guild.default_role: nextcord.PermissionOverwrite(view_channel=False),
             user: nextcord.PermissionOverwrite(view_channel=True, send_messages=True, attach_files=True, embed_links=True),
             guild.me: nextcord.PermissionOverwrite(view_channel=True, send_messages=True, manage_channels=True, manage_permissions=True)
         }
+
+        if trial_seller_role:
+            overwrites[trial_seller_role] = nextcord.PermissionOverwrite(view_channel=True, send_messages=True)
+        if seller_role:
+            overwrites[seller_role] = nextcord.PermissionOverwrite(view_channel=True, send_messages=True)
 
         category = nextcord.utils.get(guild.categories, name="tickety")
 
