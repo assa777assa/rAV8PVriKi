@@ -62,7 +62,7 @@ class TicketButtonView(View):
 
 class CloseTicketView(View):
     def __init__(self, channel):
-        super().__init__(timeout=None)  # Make the view persistent
+        super().__init__(timeout=None)
         self.channel = channel
 
     @nextcord.ui.button(label="❌ Zamknij Ticket", style=ButtonStyle.danger, custom_id="close_ticket")
@@ -73,7 +73,13 @@ class CloseTicketView(View):
 
     @nextcord.ui.button(label="⚙️ Ustawienia Ticketu", style=ButtonStyle.secondary, custom_id="ticket_settings")
     async def ticket_settings(self, button: Button, interaction: Interaction):
-        if not interaction.user.guild_permissions.administrator:
+
+        trial_seller_role = nextcord.utils.get(interaction.guild.roles, name="Trail seller")
+        seller_role = nextcord.utils.get(interaction.guild.roles, name="seller")
+
+        if not (interaction.user.guild_permissions.administrator or 
+                (trial_seller_role and trial_seller_role in interaction.user.roles) or 
+                (seller_role and seller_role in interaction.user.roles)):
             await interaction.response.send_message("❌ Brak uprawnień!", ephemeral=True)
             return
 
